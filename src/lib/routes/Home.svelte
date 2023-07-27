@@ -1,27 +1,41 @@
-<script>
-  import { boxProps } from "../../state/scale";
+<script lang="ts">
+  import { Form, Field } from "../form/index";
+  import { validateEmail, validateRequiredField } from "../utils/validation";
 </script>
 
-<h2>Home</h2>
-
-<button
-  class="btn btn-primary"
-  on:click={async () => {
-    await boxProps.set(
-      {
-        width: Math.random() * 500,
-        height: Math.random() * 500,
-      },
-      {
-        soft: 2,
-      }
-    );
-    console.log("done");
-  }}>Generate random size!</button
+<Form
+  on:submit={(e) => {
+    console.log(e.detail);
+  }}
+  initalValues={{ username: "Test", email: "test@gmail.com" }}
+  let:hasErrors
+  let:values
+  let:errors
 >
+  <Field name="username" label="username" type="text" validate={validateRequiredField}>
+    <p class="text-green-600" slot="error" let:error>{error}</p>
+  </Field>
+  <Field
+    name="email"
+    label="email"
+    type="email"
+    validate={(value, label) => {
+      return validateRequiredField(value, label) || validateEmail(value, label);
+    }}
+  />
+  <Field name="password" label="password" type="password" validate={validateRequiredField} />
+  <button class="btn btn-primary" type="submit" disabled={hasErrors}>Submit</button>
+</Form>
 
-<div style="width: {$boxProps.width}px; height: {$boxProps.height}px; background-color:  purple;" />
-
-<!-- <div>
-  <p>{$settings.colourScheme}</p>
-</div> -->
+<Form
+  on:submit={(e) => {
+    console.log(e.detail);
+  }}
+  let:hasErrors
+>
+  <Field name="username" label="username2" type="text" validate={validateRequiredField}>
+    <p class="text-green-600" slot="error" let:error>{error}</p>
+  </Field>
+  <Field name="password" label="password" type="password" validate={validateRequiredField} />
+  <button class="btn btn-primary" type="submit" disabled={hasErrors}>Submit</button>
+</Form>
