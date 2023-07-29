@@ -1,41 +1,53 @@
 <script lang="ts">
-  import { Form, Field } from "../form/index";
-  import { validateEmail, validateRequiredField } from "../utils/validation";
+  import { Stage, Layer, Rect } from "../konva";
+  let showCanvas = true;
+  let x = 20;
+  let width = 300;
+
+  let rect1, rect2;
 </script>
 
-<Form
-  on:submit={(e) => {
-    console.log(e.detail);
-  }}
-  initalValues={{ username: "Test", email: "test@gmail.com" }}
-  let:hasErrors
-  let:values
-  let:errors
->
-  <Field name="username" label="username" type="text" validate={validateRequiredField}>
-    <p class="text-green-600" slot="error" let:error>{error}</p>
-  </Field>
-  <Field
-    name="email"
-    label="email"
-    type="email"
-    validate={(value, label) => {
-      return validateRequiredField(value, label) || validateEmail(value, label);
-    }}
-  />
-  <Field name="password" label="password" type="password" validate={validateRequiredField} />
-  <button class="btn btn-primary" type="submit" disabled={hasErrors}>Submit</button>
-</Form>
+<!-- <div bind:this={container} /> -->
+<label>
+  Show canvas
+  <input type="checkbox" bind:checked={showCanvas} />
+</label>
+<input type="range" bind:value={x} min={0} max={300} />
+<input type="range" bind:value={width} min={0} max={1000} />
 
-<Form
-  on:submit={(e) => {
-    console.log(e.detail);
-  }}
-  let:hasErrors
+<button
+  class="btn btn-primary"
+  on:click={() => {
+    console.log(rect1.rect.getAttrs());
+  }}>Get Rect Info</button
 >
-  <Field name="username" label="username2" type="text" validate={validateRequiredField}>
-    <p class="text-green-600" slot="error" let:error>{error}</p>
-  </Field>
-  <Field name="password" label="password" type="password" validate={validateRequiredField} />
-  <button class="btn btn-primary" type="submit" disabled={hasErrors}>Submit</button>
-</Form>
+
+<Stage {width} height={400}>
+  {#if showCanvas}
+    <Layer
+      draggable
+      on:dragmove={(e) => {
+        console.log(e.detail);
+      }}
+      on:click={() => console.log("click")}
+    >
+      <Rect bind:this={rect1} x={20} y={20} fill="purple" width={100} height={100} />
+      <Rect {x} y={90} fill="blue" width={200} height={100} />
+    </Layer>
+    <Layer {x}>
+      <Rect
+        Rect
+        bind:this={rect2}
+        x={50}
+        y={20}
+        fill="red"
+        width={100}
+        height={100}
+        stroke="white"
+        strokeWidth="4"
+        on:click={() => console.log("red clicked")}
+        on:mousedown={() => console.log("red down")}
+      />
+    </Layer>
+  {/if}
+</Stage>
